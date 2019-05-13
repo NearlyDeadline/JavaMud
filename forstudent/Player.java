@@ -54,7 +54,7 @@ public class Player {
 	
 	public void hp() {
 		//²é¿´hp
-		
+		3
 	}
 	public void setLocation(String location){
 		

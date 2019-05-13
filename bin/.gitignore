@@ -1,15 +1,1 @@
-/.classpath
-/.project
-/Client$MonitorThread.class
-/Client.class
-/CommonContent$DIRECTION.class
-/CommonContent.class
-/MessageManagement.class
-/Player.class
-/Room.class
-/RoomManagement.class
-/Server$ServerThread.class
-/Server.class
-/StaticFunctions.class
-/UserInput.class
 /forstudent/
