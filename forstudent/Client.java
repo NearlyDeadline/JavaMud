@@ -68,7 +68,7 @@ public class Client extends JFrame {
 				// TODO Auto-generated method stub
 				try {
 					//连接服务器在这里添加
-
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 					screen.setText(screen.getText() + "链接服务器失败！请重试\n");

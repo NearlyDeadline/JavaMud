@@ -51,6 +51,11 @@ public class Player {
 		
 		//save添加在这里
 	}
+	
+	public void hp() {
+		//查看hp
+		
+	}
 	public void setLocation(String location){
 		
 	}
