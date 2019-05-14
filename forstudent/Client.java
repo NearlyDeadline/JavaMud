@@ -34,7 +34,7 @@ public class Client extends JFrame {
 	}
 
 	public Client() {
-		super("Mud Client");
+		super("¿Í»§¶Ë");
 		Container container = this.getContentPane();
 		container.setLayout(new BorderLayout());
 		JPanel leftPanel = new JPanel();
@@ -47,12 +47,12 @@ public class Client extends JFrame {
 		screen.setAutoscrolls(true);
 		JScrollPane jsp = new  JScrollPane(screen);
 		input = new JTextField();
-		connection = new JButton("conncet");
+		connection = new JButton("µÇÂ¼");
 		leftPanel.add(BorderLayout.CENTER, jsp);
 		leftPanel.add(BorderLayout.SOUTH, input);
 		// rightPanel.setLayout(new FlowLayout());
 		rightPanel.add(connection);
-		this.setSize(800, 600);
+		this.setSize(600, 400);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		input.addKeyListener(new KeyAdapter() {

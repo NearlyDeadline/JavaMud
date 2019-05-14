@@ -19,37 +19,38 @@ public class Server {
 				BufferedReader in = new BufferedReader(new InputStreamReader (socket.getInputStream()));
 				BufferedWriter out= new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 				String input;
-				out.write("成功连接至服务器");
+				out.write("成功连接至服务器\n");
 				do {
-					out.write("输入用户名，超过45字节的部分会被截断");
+					out.write("输入用户名，超过45字节的部分会被截断\n");
 					out.flush();
 					input = in.readLine();
 				} while (input.isEmpty());
 				Player p = null;
-				p = insert(out, input);//获得唯一的标识符，用于后续操作
+				p = login(out, input);//用户登录
+				
 				MessageManagement.addPlayerChannels(p.getId(), out);
-				RoomManagement.cityMap.get(p.getLocation()).addPlayer(p);
-				System.out.println(p.getName()+"上线进入游戏");
+				System.out.println(p.getName()+"上线进入游戏\n");
 				
 				boolean quit = false;
 				while (!quit) {
 					input = in.readLine();
-					
 					if (input.equals("quit")) {
 						quit = true;
-						System.out.println(p.getName()+"下线退出游戏");
+						System.out.println(p.getName()+"下线退出游戏\n");
 					}
 					UserInput.dealInput(p, input);
 				}
-				MessageManagement.showToPlayer(p, "成功下线退出游戏");
+				MessageManagement.showToPlayer(p, "成功下线退出游戏\n");
 				MessageManagement.removePlayerChannels(p.getId());
+				Player.delOnlinePlayers(p.getId());
+				p = null;
 				socket.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		
-		public static Player insert(BufferedWriter out, String name) {
+		public static Player login(BufferedWriter out, String name) {
 			Player player = null;
 			try {
 				Class.forName(MySQLData.driver);
@@ -61,10 +62,10 @@ public class Server {
 				ps.setString(1, name);
 				//INSERT INTO sys.users (name, location) values ('$name', 'init');其中$name为输入的用户名变量
 				if (ps.executeUpdate() == 0) {
-					out.write("登录过的用户，按上次状态登录");//若数据库已有，则直接在内存中创建
+					out.write("登录过的用户，按上次状态登录\n");//若数据库已有，则直接在内存中创建
 				}
 				else {
-					out.write("未登录用户，已创建新账户");
+					out.write("未登录用户，已创建新账户\n");
 				}
 				sql = "SELECT * FROM sys.users WHERE name=?;";
 				ps = con.prepareStatement(sql);
@@ -77,6 +78,7 @@ public class Server {
 				player.setHp(rs.getInt(3));
 				player.setLocation(rs.getString(4));
 				out.write("唯一标识符：" + id);
+				Player.addOnlinePlayers(id, player);
 				rs.close();
 				ps.close();
 				con.close();
@@ -94,7 +96,6 @@ public class Server {
 	public static int PORT_NUM = 1888;
 	
 	static public void main(String[] args) throws IOException {
-		RoomManagement.creatRooms();
 		@SuppressWarnings("resource")
 		ServerSocket serverSocket = new ServerSocket(PORT_NUM);
 		while (true) {

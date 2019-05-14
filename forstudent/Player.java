@@ -1,12 +1,22 @@
 package forstudent;
+import java.util.Hashtable;
+
 public class Player {
 
 	private int hp;
-	private int id;
+	private Integer id;
 	private String name;
 	private String location;
+	
+	static private Hashtable<Integer, Player> onlinePlayers = new Hashtable<Integer, Player>();//所有在线玩家保存到内存中
 
-	public void move(CommonContent.DIRECTION direction) {
+	public static void addOnlinePlayers(Integer key, Player p) {
+		onlinePlayers.put(key, p);
+	}
+	public static void delOnlinePlayers(Integer key) {
+		onlinePlayers.remove(key);
+	}
+	public void move(CommonContent.DIRECTION direction) {//从数据库选取所在房间，获取周围方向，判断是否可行。若可行则更新this.location并将其写入Hashtable和数据库中，否则回复不可行
 		
 	}
 	public void look(String something){
@@ -16,15 +26,11 @@ public class Player {
 			;//查看其它物品
 	}
 	
-	public void quit(){
+	public void leave(){
 		//告诉房间退出了，释放资源
 		
 		
 		//save添加在这里
-	}
-	
-	public void hp() {
-		//查看hp
 	}
 
 	public int getHp() {
@@ -58,6 +64,4 @@ public class Player {
 	public void setLocation(String location) {
 		this.location = location;
 	}
-	
-
 }

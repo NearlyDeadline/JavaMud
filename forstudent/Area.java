@@ -1,16 +1,16 @@
 package forstudent;
 import java.util.*;
 
-public class Room {
+public class Area {
 
-	private HashMap<CommonContent.DIRECTION, Room> neighbor = new HashMap<CommonContent.DIRECTION, Room>();
+	private HashMap<CommonContent.DIRECTION, Area> neighbor = new HashMap<CommonContent.DIRECTION, Area>();
 
-	void setRoom(CommonContent.DIRECTION d, Room r) {
+	void setRoom(CommonContent.DIRECTION d, Area r) {
 		neighbor.put(d, r);
 		// assert r.getRoom(d) == this;
 	}
 
-	public Room getRoom(CommonContent.DIRECTION d) {
+	public Area getRoom(CommonContent.DIRECTION d) {
 		return neighbor.get(d);
 
 	}
@@ -19,9 +19,9 @@ public class Room {
 	private String roomLooking;
 	private String roomId;
 	private String roomName;
-	private HashMap<String, Player> playerList = new HashMap<String, Player>();
-
-	public void exist(Player player, CommonContent.DIRECTION direction) {
+	static private Hashtable<Integer, Player> playerList = new Hashtable<Integer, Player>();
+	static private Hashtable<String, Player> roomList = new Hashtable<String, Player>();
+	public void move(Player player, CommonContent.DIRECTION direction) {
 		
 
 	}
@@ -29,13 +29,8 @@ public class Room {
 	public void enter(Player player, CommonContent.DIRECTION direction) {
 		
 	}
-	public void removePlayer(Player player){
-	//用户退出后，清除用户在列表中内容，通知房间内其他玩家
-		
-	}
-	public void addPlayer(Player player){
-	//用户连线进入，加入列表，通知房间其他玩家
-		
+	
+	public void leave(Player player, CommonContent.DIRECTION direction) {
 		
 	}
 
