@@ -1,39 +1,10 @@
 package forstudent;
 public class Player {
 
-	private int experience;
-	private int con;
-	private int dex;
-	private int str;
-	private int wis;
-	private int hp, max_hp;
-	private int nl, max_nl;
-	private int jl, max_jl;
-	private String id;
-	private String username;
-	private String party;
+	private int hp;
+	private int id;
+	private String name;
 	private String location;
-
-	public Player() {
-		// creat player default value
-	}
-	public Player(int experience,int con,int dex,int str,int wis,int hp,int max_hp,int nl,int max_nl,int jl,int max_jl,String id,String username,String party,String location){
-		this.experience = experience;
-		this.con = con;
-		this.dex = dex;
-		this.str = str;
-		this.wis = wis;
-		this.hp = hp;
-		this.max_hp = max_hp;
-		this.nl = nl;
-		this.max_nl = max_nl;
-		this.jl = jl;
-		this.max_jl = jl;
-		this.id = id;
-		this.username = username;
-		this.party = party;
-		this.location = location;
-	}
 
 	public void move(CommonContent.DIRECTION direction) {
 		
@@ -54,24 +25,39 @@ public class Player {
 	
 	public void hp() {
 		//²é¿´hp
-		3
 	}
-	public void setLocation(String location){
-		
+
+	public int getHp() {
+		return hp;
 	}
-	public String getLocation(){
-		return this.location;
+
+	public void setHp(int hp) {
+		this.hp = hp;
 	}
-	public String getId(){
+
+	public int getId() {
 		return id;
 	}
-	public void setId(String id){
-		
+
+	public void setId(int id) {
+		this.id = id;
 	}
-	public String getName(){
-		return this.username;
+
+	public String getName() {
+		return name;
 	}
-	public void setName(String username){
-		
+
+	public void setName(String name) {
+		this.name = name;
 	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+	
+
 }

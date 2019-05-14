@@ -7,10 +7,10 @@ public class MessageManagement {
 	public static void showToPlayer(Player player, String message){
 		
 	}
-	public static void addPlayerChannels(String playerId,BufferedWriter bw){
+	public static void addPlayerChannels(int playerId,BufferedWriter bw){
 		
 	}
-	public static void removePlayerChannels(String playerId){
+	public static void removePlayerChannels(int playerId){
 		
 	}
 }
