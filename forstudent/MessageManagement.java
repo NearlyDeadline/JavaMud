@@ -4,7 +4,7 @@ import java.util.*;
 public class MessageManagement {
 	static Hashtable<Integer,BufferedWriter> playerChannels = new Hashtable<Integer,BufferedWriter>();
 	public static void showToPlayer(Player p, String message){
-		BufferedWriter out = (BufferedWriter)playerChannels.get(new Integer(p.getId()));
+		BufferedWriter out = (BufferedWriter)playerChannels.get(p.getId());
 		try {
 			out.write(message);
 			out.flush();

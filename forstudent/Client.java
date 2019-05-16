@@ -29,7 +29,7 @@ public class Client extends JFrame {
 		@Override
 		public void run() {
 			//接收服务器消息的控制在这里添加
-			
+
 		}
 	}
 
@@ -68,7 +68,9 @@ public class Client extends JFrame {
 				// TODO Auto-generated method stub
 				try {
 					//连接服务器在这里添加
-					
+					socket = new Socket(ipaddress, port);
+					in = new BufferedReader(new InputStreamReader (socket.getInputStream()));
+					out= new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 				} catch (Exception e) {
 					e.printStackTrace();
 					screen.setText(screen.getText() + "链接服务器失败！请重试\n");

@@ -57,10 +57,10 @@ public class Server {
 				Connection con = DriverManager.getConnection(MySQLData.url, MySQLData.user, MySQLData.password);
 				if (!con.isClosed())
 					System.out.println("成功连接至数据库");
-				String sql = "INSERT INTO sys.users (name, location) values (?,'init');";
+				String sql = "INSERT INTO mud.users (name) values (?);";
 				PreparedStatement ps = con.prepareStatement(sql);
 				ps.setString(1, name);
-				//INSERT INTO sys.users (name, location) values ('$name', 'init');其中$name为输入的用户名变量
+				//INSERT INTO sys.users (name) values ('$name');其中$name为输入的用户名变量
 				if (ps.executeUpdate() == 0) {
 					out.write("登录过的用户，按上次状态登录\n");//若数据库已有，则直接在内存中创建
 				}
