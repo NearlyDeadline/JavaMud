@@ -1,12 +1,29 @@
 package forstudent;
-import java.io.*;
-import javax.swing.*;
-import java.net.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 public class Client extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6450215156697251411L;
 	private JTextArea screen;
 	private JTextField input;
 	private JButton connection;
@@ -14,7 +31,7 @@ public class Client extends JFrame {
 	private Socket socket;
 	private BufferedReader in;
 	private BufferedWriter out;
-
+	
 	private String ipaddress = "127.0.0.1";
 	private int port = 1888;
 	private boolean connected = false;
@@ -22,6 +39,7 @@ public class Client extends JFrame {
 	class MonitorThread extends Thread {
 		public MonitorThread(BufferedReader br) {
 			//添加
+			this.br = br;
 		}
 
 		BufferedReader br;
@@ -31,7 +49,7 @@ public class Client extends JFrame {
 			//接收服务器消息的控制在这里添加
 
 		}
-	}
+	};
 
 	public Client() {
 		super("客户端");
@@ -45,20 +63,21 @@ public class Client extends JFrame {
 		screen = new JTextArea();
 		screen.setEditable(false);
 		screen.setAutoscrolls(true);
-		JScrollPane jsp = new  JScrollPane(screen);
+		screen.setLineWrap(true);
+		JScrollPane jsp = new JScrollPane(screen);
 		input = new JTextField();
 		connection = new JButton("登录");
 		leftPanel.add(BorderLayout.CENTER, jsp);
 		leftPanel.add(BorderLayout.SOUTH, input);
-		// rightPanel.setLayout(new FlowLayout());
 		rightPanel.add(connection);
 		this.setSize(600, 400);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		input.addKeyListener(new KeyAdapter() {
-			public void keyTyped(KeyEvent arg0) {
+			public void keyTyped(KeyEvent event) {
 				// TODO Auto-generated method stub
 				//用户键盘输入在这里添加
+				
 			}
 		});
 		connection.addActionListener(new ActionListener() {
@@ -71,9 +90,12 @@ public class Client extends JFrame {
 					socket = new Socket(ipaddress, port);
 					in = new BufferedReader(new InputStreamReader (socket.getInputStream()));
 					out= new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+					screen.append(in.readLine() + "\r\n");
+					screen.append(in.readLine() + "\r\n");
+					connected = true;
 				} catch (Exception e) {
 					e.printStackTrace();
-					screen.setText(screen.getText() + "链接服务器失败！请重试\n");
+					screen.setText(screen.getText() + "链接服务器失败！请重试");
 					System.exit(1);
 				}
 			}
@@ -93,7 +115,6 @@ public class Client extends JFrame {
 			}
 		}
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//System.exit(1);
 	}
 
 	public void setText(JTextArea screen, String Message) {

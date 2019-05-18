@@ -1,4 +1,5 @@
 package forstudent;
+
 public class UserInput {
 	public static void dealInput(Player p, String inputMessage) {
 		/*
@@ -7,14 +8,14 @@ public class UserInput {
 
 		String[] inputs = inputMessage.split(" ");
 		if (inputs[0].equals("l") || inputs[0].equals("look")) {
-			p.look(inputs[0]);
+			p.look();
 			return;
 		}
 		if (inputs[0].equals("quit")) {
 			return;
 		}
 		if (inputs[0].equals("hp")) {
-			MessageManagement.showToPlayer(p, "当前生命值为：" + p.getHp() + '\n');
+			MessageManagement.showToPlayer(p, "当前生命值为：" + p.getHp());
 			return;
 		}
 		if (inputs[0].equals("e") || inputs[0].equals("east")) {
@@ -57,6 +58,6 @@ public class UserInput {
 			p.move(CommonContent.DIRECTION.DOWN);
 			return;
 		}	
-		MessageManagement.showToPlayer(p, "什么？\n");
+		MessageManagement.showToPlayer(p, "什么？");
 	}
 }

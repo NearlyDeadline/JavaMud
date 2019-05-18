@@ -1,7 +1,17 @@
 package forstudent;
-import java.io.*;
-import java.net.*;
-import java.sql.*;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Server {
 
@@ -18,7 +28,7 @@ public class Server {
 			try {
 				BufferedReader in = new BufferedReader(new InputStreamReader (socket.getInputStream()));
 				BufferedWriter out= new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-				String input;
+				String input = "";
 				out.write("成功连接至服务器\n");
 				do {
 					out.write("输入用户名，超过45字节的部分会被截断\n");
@@ -29,7 +39,8 @@ public class Server {
 				p = login(out, input);//用户登录
 				
 				MessageManagement.addPlayerChannels(p.getId(), out);
-				System.out.println(p.getName()+"上线进入游戏\n");
+				System.out.println(p.getName()+"上线进入游戏");
+				MessageManagement.chat(p, p.getName() + "离开了" + p.getLocation() + "\n");
 				
 				boolean quit = false;
 				while (!quit) {
@@ -37,6 +48,7 @@ public class Server {
 					if (input.equals("quit")) {
 						quit = true;
 						System.out.println(p.getName()+"下线退出游戏\n");
+						MessageManagement.chat(p, p.getName() + "退出了游戏\n");
 					}
 					UserInput.dealInput(p, input);
 				}
@@ -62,10 +74,10 @@ public class Server {
 				ps.setString(1, name);
 				//INSERT INTO sys.users (name) values ('$name');其中$name为输入的用户名变量
 				if (ps.executeUpdate() == 0) {
-					out.write("登录过的用户，按上次状态登录\n");//若数据库已有，则直接在内存中创建
+					out.write("登录过的用户，按上次状态登录");//若数据库已有，则直接在内存中创建
 				}
 				else {
-					out.write("未登录用户，已创建新账户\n");
+					out.write("未登录用户，已创建新账户");
 				}
 				sql = "SELECT * FROM sys.users WHERE name=?;";
 				ps = con.prepareStatement(sql);
@@ -98,6 +110,7 @@ public class Server {
 	static public void main(String[] args) throws IOException {
 		@SuppressWarnings("resource")
 		ServerSocket serverSocket = new ServerSocket(PORT_NUM);
+		System.out.println("服务器已登录\n");
 		while (true) {
 			Socket socket = serverSocket.accept();
 			new ServerThread(socket).start();

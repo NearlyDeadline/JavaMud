@@ -31,18 +31,16 @@ public static void delOnlinePlayers(Integer key);
 
 public void move(CommonContent.DIRECTION direction);
 - 从数据库选取当前玩家所在的房间，获取周围方向，判断是否可行，若可行则更新this.location，将其写入Hashtable中，再更新到数据库中
-- 调用新房间的发送消息的方法
+- 调用相关发送消息的方法
 
-```
-- Area.java: 区域类
-```
-public void move(Player player, CommonContent.DIRECTION direction);
-- 当有玩家在区域内移动时，向相关玩家发送消息
+public void look();
+- 
+
 ```
 - MessageManagement.java: 
 ```
 static Hashtable<Integer,BufferedWriter> playerChannels = new Hashtable<Integer,BufferedWriter>();
-- 保存玩家频道，实现私聊功能
+- 保存玩家频道
 
 public static void showToPlayer(Player p, String message);
 - 服务器调用，向客户端账户输出信息
