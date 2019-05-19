@@ -37,22 +37,20 @@ public class Server {
 				} while (input.isEmpty());
 				Player p = null;
 				p = login(out, input);//用户登录
-				
 				MessageManagement.addPlayerChannels(p.getId(), out);
 				System.out.println(p.getName()+"上线进入游戏");
-				MessageManagement.chat(p, p.getName() + "离开了" + p.getLocation() + "\n");
-				
+				MessageManagement.chat(p, p.getName() + "离开了" + p.getLocation());
 				boolean quit = false;
 				while (!quit) {
 					input = in.readLine();
 					if (input.equals("quit")) {
 						quit = true;
-						System.out.println(p.getName()+"下线退出游戏\n");
-						MessageManagement.chat(p, p.getName() + "退出了游戏\n");
+						System.out.println(p.getName()+"下线退出游戏");
+						MessageManagement.chat(p, p.getName() + "退出了游戏");
 					}
 					UserInput.dealInput(p, input);
 				}
-				MessageManagement.showToPlayer(p, "成功下线退出游戏\n");
+				MessageManagement.showToPlayer(p, "成功下线退出游戏");
 				MessageManagement.removePlayerChannels(p.getId());
 				Player.delOnlinePlayers(p.getId());
 				p = null;
@@ -110,7 +108,7 @@ public class Server {
 	static public void main(String[] args) throws IOException {
 		@SuppressWarnings("resource")
 		ServerSocket serverSocket = new ServerSocket(PORT_NUM);
-		System.out.println("服务器已登录\n");
+		System.out.println("服务器已登录");
 		while (true) {
 			Socket socket = serverSocket.accept();
 			new ServerThread(socket).start();

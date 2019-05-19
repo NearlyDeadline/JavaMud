@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 public class Player {
@@ -39,7 +40,7 @@ public class Player {
 				ps.setString(1, target);
 				rs = ps.executeQuery();
 				while (rs.next()) {
-					MessageManagement.chat(this, name + "离开了" + location + "\n");
+					MessageManagement.chat(this, name + "离开了" + location);
 					this.location = target;
 					sql = "UPDATE mud.users SET location=? WHERE id=?;";
 					ps = con.prepareStatement(sql);
@@ -47,7 +48,7 @@ public class Player {
 					ps.setString(2, this.id.toString());
 					ps.executeUpdate();
 					//更新数据库
-					MessageManagement.chat(this, name + "进入了" + location + "\n");
+					MessageManagement.chat(this, name + "进入了" + location);
 				}
 			}
 			else {//对应方向没有房间
@@ -75,7 +76,7 @@ public class Player {
 			ps.setString(1, this.location);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				description = rs.getString("description") + "\n";
+				description = rs.getString("description");
 			}
 			
 			
@@ -90,6 +91,36 @@ public class Player {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	public void hp() {
+		MessageManagement.showToPlayer(this, "当前生命值为：" + hp);
+	}
+	public void chat(String message) {
+		MessageManagement.chat(this, message);
+	}
+	public void tell(String name, String message) {//有可能不在线
+		Player target = null;
+		Enumeration<Integer> e = Player.getOnlinePlayers().keys();//遍历所有在线玩家
+		while(e.hasMoreElements()){
+			target = Player.getOnlinePlayers().get(e.nextElement());
+			if (target.getName().equals(name)){
+				MessageManagement.showToPlayer(target, message);
+				return;
+			}
+		}
+		MessageManagement.showToPlayer(this, "未找到该玩家，可能不在线或无此账户");
+	}
+	public void who() {
+		String message = "查询在线玩家\n";
+		Player target = null;
+		Enumeration<Integer> e = Player.getOnlinePlayers().keys();//遍历所有在线玩家
+		while(e.hasMoreElements()){
+			target = Player.getOnlinePlayers().get(e.nextElement());
+			if (!(target.getName().equals(name))){//不算自己
+				message += target.getName() + "   ";
+			}
+		}
+		MessageManagement.showToPlayer(this, message);
 	}
     public int getHp() {
 		return hp;

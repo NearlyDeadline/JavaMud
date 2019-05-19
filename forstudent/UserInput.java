@@ -3,7 +3,7 @@ package forstudent;
 public class UserInput {
 	public static void dealInput(Player p, String inputMessage) {
 		/*
-		 * 可以处理的命令 l,look,hp,e,east,w,west,n,north,s,south,
+		 * 可以处理的命令 l,look,hp,e,east,w,west,n,north,s,south,u,up,d,down,quit
 		 */
 
 		String[] inputs = inputMessage.split(" ");
@@ -15,7 +15,32 @@ public class UserInput {
 			return;
 		}
 		if (inputs[0].equals("hp")) {
-			MessageManagement.showToPlayer(p, "当前生命值为：" + p.getHp());
+			p.hp();
+			return;
+		}
+		if (inputs[0].equals("chat")) {
+			if (inputs.length > 1) {
+				p.chat(inputs[1]);
+			}
+			else {
+				MessageManagement.showToPlayer(p, "群聊内容不可为空");
+			}
+			return;
+		}
+		if (inputs[0].equals("tell")) {
+			if (inputs.length == 1) {
+				MessageManagement.showToPlayer(p, "请输入私聊对象");
+			}
+			else if (inputs.length == 2) {
+				MessageManagement.showToPlayer(p, "私聊内容不可为空");
+			}
+			else {
+				p.tell(inputs[1], inputs[2]);
+			}
+			return;
+		}
+		if (inputs[0].equals("who")) {
+			p.who();
 			return;
 		}
 		if (inputs[0].equals("e") || inputs[0].equals("east")) {

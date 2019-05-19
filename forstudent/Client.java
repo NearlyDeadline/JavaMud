@@ -38,7 +38,6 @@ public class Client extends JFrame {
 
 	class MonitorThread extends Thread {
 		public MonitorThread(BufferedReader br) {
-			//添加
 			this.br = br;
 		}
 
@@ -47,7 +46,13 @@ public class Client extends JFrame {
 		@Override
 		public void run() {
 			//接收服务器消息的控制在这里添加
-
+			while (true) {
+				try {
+					screen.append(br.readLine() + "\r\n");
+				} catch (IOException e) {
+					screen.append("消息接收错误\r\n");
+				}
+			}
 		}
 	};
 
@@ -74,24 +79,30 @@ public class Client extends JFrame {
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		input.addKeyListener(new KeyAdapter() {
-			public void keyTyped(KeyEvent event) {
-				// TODO Auto-generated method stub
-				//用户键盘输入在这里添加
-				
+			public void keyPressed(KeyEvent event) {
+				if (event.getKeyChar() == KeyEvent.VK_ENTER) {
+					try {
+						out.write(input.getText());
+						out.flush();	
+					} catch (Exception e) {
+						screen.append("未连接至服务器\r\n");
+					} finally {
+						input.setText("");
+					}
+				}
 			}
 		});
 		connection.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
 				try {
 					//连接服务器在这里添加
 					socket = new Socket(ipaddress, port);
 					in = new BufferedReader(new InputStreamReader (socket.getInputStream()));
 					out= new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-					screen.append(in.readLine() + "\r\n");
-					screen.append(in.readLine() + "\r\n");
+					MonitorThread monitor = new MonitorThread(in);
+					monitor.start();
 					connected = true;
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -121,7 +132,6 @@ public class Client extends JFrame {
 		String[] temp = Message.split("\t");
 		for (int i = 0; i < temp.length; i++) {
 			screen.setText(screen.getText() + temp[i] + "\n");
-			// System.out.print(temp[i]+"\n");
 		}
 		screen.setCaretPosition(screen.getDocument().getLength());
 	}

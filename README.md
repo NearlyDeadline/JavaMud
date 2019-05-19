@@ -12,7 +12,14 @@ public static Player login(BufferedWriter out, String name);
 ```
 - Client.java: 客户端程序
 ```
+class MonitorThread extends Thread;
+- 客户端建立一个新线程，不断接收服务器消息并显示于屏幕上
 
+class JTextField;
+- 输入文本框，按Enter后将文本框的信息发送给服务器
+
+class JTextArea;
+- 输出文本框，输出服务器发送的消息
 ```
 - UserInput.java: 响应操作指令方法
 ```
@@ -33,12 +40,24 @@ public void move(CommonContent.DIRECTION direction);
 - 从数据库选取当前玩家所在的房间，获取周围方向，判断是否可行，若可行则更新this.location，将其写入Hashtable中，再更新到数据库中
 - 调用相关发送消息的方法
 
+public void hp();
+- 查看当前hp
+
 public void look();
 - 向玩家展示当前房间的描述，出口信息等
+
+public void chat(String message);
+- 群聊，对附近Area的玩家发送消息
+
+public void tell(String name, String message);
+- 私聊，对任意远的名字为name的玩家发送消息
+
+public void who();
+- 查询在线玩家，显示其姓名和所在区域
 ```
-- MessageManagement.java: 
+- MessageManagement.java: 发送消息方法
 ```
-static Hashtable<Integer,BufferedWriter> playerChannels = new Hashtable<Integer,BufferedWriter>();
+private static Hashtable<Integer,BufferedWriter> playerChannels = new Hashtable<Integer,BufferedWriter>();
 - 保存玩家频道
 
 public static void showToPlayer(Player p, String message);

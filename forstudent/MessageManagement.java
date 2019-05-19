@@ -10,10 +10,10 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 public class MessageManagement {
-	static Hashtable<Integer,BufferedWriter> playerChannels = new Hashtable<Integer,BufferedWriter>();
+	private static Hashtable<Integer,BufferedWriter> playerChannels = new Hashtable<Integer,BufferedWriter>();
 	public static void showToPlayer(Player p, String message){
 		try {
-			playerChannels.get(p.getId()).write(message);
+			playerChannels.get(p.getId()).write(message + "\n");
 			playerChannels.get(p.getId()).flush();
 		} catch (Exception e) {
 			e.printStackTrace();
