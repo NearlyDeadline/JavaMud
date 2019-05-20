@@ -5,5 +5,4 @@ public interface CommonContent {
 	enum DIRECTION {
 		EAST, WEST, SOUTH, NORTH, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST,UP, DOWN 
 	};
-	int CHARS_PER_LINE = 40;
 }

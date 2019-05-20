@@ -36,7 +36,7 @@ public class Client extends JFrame {
 	private int port = 1888;
 	private boolean connected = false;
 
-	class MonitorThread extends Thread {
+	class MonitorThread extends Thread {//新建线程负责接受服务器传回的消息
 		public MonitorThread(BufferedReader br) {
 			this.br = br;
 		}
@@ -45,17 +45,16 @@ public class Client extends JFrame {
 
 		@Override
 		public void run() {
-			//接收服务器消息的控制在这里添加
-			while (true) {
-				try {
-					screen.append(br.readLine() + "\r\n");
-				} catch (IOException e) {
-					screen.append("消息接收错误\r\n");
+			String text = "";
+			try {
+				while ((text = br.readLine()) != null) {
+					appendText(text + "\n");
 				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	};
-
 	public Client() {
 		super("客户端");
 		Container container = this.getContentPane();
@@ -71,7 +70,7 @@ public class Client extends JFrame {
 		screen.setLineWrap(true);
 		JScrollPane jsp = new JScrollPane(screen);
 		input = new JTextField();
-		connection = new JButton("登录");
+		connection = new JButton("连接服务器");
 		leftPanel.add(BorderLayout.CENTER, jsp);
 		leftPanel.add(BorderLayout.SOUTH, input);
 		rightPanel.add(connection);
@@ -80,12 +79,12 @@ public class Client extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		input.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent event) {
-				if (event.getKeyChar() == KeyEvent.VK_ENTER) {
+				if (event.getKeyChar() == KeyEvent.VK_ENTER) {//按Enter将命令发送给服务器
 					try {
-						out.write(input.getText());
+						out.write(input.getText() + "\n");
 						out.flush();	
 					} catch (Exception e) {
-						screen.append("未连接至服务器\r\n");
+						appendText("服务器未启动\n");
 					} finally {
 						input.setText("");
 					}
@@ -96,18 +95,15 @@ public class Client extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					//连接服务器在这里添加
-					socket = new Socket(ipaddress, port);
+				try {//连接服务器
+			    	socket = new Socket(ipaddress, port);
 					in = new BufferedReader(new InputStreamReader (socket.getInputStream()));
 					out= new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 					MonitorThread monitor = new MonitorThread(in);
 					monitor.start();
 					connected = true;
 				} catch (Exception e) {
-					e.printStackTrace();
-					screen.setText(screen.getText() + "链接服务器失败！请重试");
-					System.exit(1);
+					appendText("服务器未启动\n");
 				}
 			}
 		});
@@ -115,7 +111,7 @@ public class Client extends JFrame {
 
 	public void setDefaultCloseOperation(int arg0) {
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		if (connected) {
+		if (connected) {//关闭窗口和输入输出流
 			try {
 				connected = false;
 				socket.close();
@@ -128,12 +124,14 @@ public class Client extends JFrame {
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
-	public void setText(JTextArea screen, String Message) {
-		String[] temp = Message.split("\t");
-		for (int i = 0; i < temp.length; i++) {
-			screen.setText(screen.getText() + temp[i] + "\n");
+	private void appendText(String text) {
+		screen.append(text);
+		screen.selectAll();
+		if (screen.getSelectedText() != null) {
+			screen.setCaretPosition(screen.getSelectedText().length());
+			screen.requestFocus();
+			input.requestFocus();
 		}
-		screen.setCaretPosition(screen.getDocument().getLength());
 	}
 
 	public static void main(String[] args) {

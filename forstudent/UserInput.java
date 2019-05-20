@@ -3,7 +3,7 @@ package forstudent;
 public class UserInput {
 	public static void dealInput(Player p, String inputMessage) {
 		/*
-		 * 可以处理的命令 l,look,hp,e,east,w,west,n,north,s,south,u,up,d,down,quit
+		 * 可以处理的命令 l,look,hp,e,east,w,west,n,north,s,south,u,up,d,down,quit,chat,tell,who
 		 */
 
 		String[] inputs = inputMessage.split(" ");
@@ -12,6 +12,9 @@ public class UserInput {
 			return;
 		}
 		if (inputs[0].equals("quit")) {
+			MessageManagement.showToPlayer(p, "成功下线退出游戏");
+			MessageManagement.removePlayerChannels(p.getId());
+			Player.delOnlinePlayers(p.getId());
 			return;
 		}
 		if (inputs[0].equals("hp")) {
