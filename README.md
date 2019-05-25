@@ -18,6 +18,12 @@ public void run();
 
 public static Player login(BufferedWriter out, String name);
 - 从客户端读入登录账户名name，在数据库中创建该用户，通过缓冲流out输出提示信息，回传该用户指针
+
+private static Hashtable<String, Room> Rooms = new Hashtable<String, Room>();
+- 保存所有房间的哈希表，主要用于实现Room的多态
+
+private static void CreateRooms();
+- 创建世界的各种房间，主要用于实现Room的多态
 ```
 - Client.java: 客户端程序
 ```
@@ -50,16 +56,13 @@ public static void delOnlinePlayers(Integer key);
 
 public void move(CommonContent.DIRECTION direction);
 - 从数据库选取当前玩家所在的房间，获取周围方向，判断是否可行，若可行则更新this.location，将其写入Hashtable中，再更新到数据库中
-- 调用相关发送消息的方法
+- 调用相关离开进入房间的方法
 
 public void hp();
 - 查看当前hp
 
 public void look();
 - 向玩家展示当前房间的描述，出口信息等
-
-private String getLocationLook(String[] directions);
-- 根据directions环视房间，获取各个出口房间的名称，默认的directions为{"north", "northeast", "east", "southeast", "south", "southwest", "west", "northwest", "up", "down"};
 
 public void chat(String message);
 - 群聊，对附近Area的玩家发送消息，也用于服务器发送玩家上下线消息
@@ -69,6 +72,17 @@ public void tell(String name, String message);
 
 public void who();
 - 查询其他在线玩家，显示其姓名
+```
+- Room.java: 房间类，本类主要实现Room的多态，数据只留存一个id，其余在数据库中保存
+```
+public void enter(Player p);
+- 玩家p进入房间时调用该方法
+
+public void leave(Player p);
+- 玩家p离开房间时调用该方法
+
+private String getLocationLook(String[] directions);
+- 根据directions环视房间，获取各个出口房间的名称，默认的directions为{"north", "northeast", "east", "southeast", "south", "southwest", "west", "northwest", "up", "down"};
 ```
 - MessageManagement.java: 发送消息方法
 ```

@@ -13,10 +13,13 @@ public class Player {
 	private int hp;
 	private Integer id;
 	private String name;
-	private String location;
+	private Room location;
 	
+	Player(String Location){
+		location = Server.getRoom(Location);
+		location.setRoomId(Location);
+	}
 	static private Hashtable<Integer, Player> onlinePlayers = new Hashtable<Integer, Player>();//所有在线玩家保存到内存中
-
 	public static void addOnlinePlayers(Integer key, Player p) {
 		getOnlinePlayers().put(key, p);
 	}
@@ -30,7 +33,7 @@ public class Player {
 			Connection con = DriverManager.getConnection(MySQLData.url, MySQLData.user, MySQLData.password);
 			String sql = "SELECT " + dir + " FROM mud.rooms WHERE id=?;";//搜索玩家当前所在房间的对应方向是否可行，返回null或者对应方向的房间id
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setString(1, this.location);
+			ps.setString(1, this.location.getRoomId());
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				String target = rs.getString(1);
@@ -43,14 +46,14 @@ public class Player {
 					ps.setString(1, target);
 					rs = ps.executeQuery();
 					while (rs.next()) {
-						MessageManagement.chat(this, name + "离开了" + location);
-						this.location = target;//更改内存中的玩家所在地
+						location.leave(this);
+						location.setRoomId(target);;//更改内存中的玩家所在地
 						sql = "UPDATE mud.users SET location=? WHERE id=?;";
 						ps = con.prepareStatement(sql);
-						ps.setString(1, this.location);
+						ps.setString(1, this.location.getRoomId());
 						ps.setInt(2, this.id);
 						ps.executeUpdate();	//更改数据库中的玩家所在地
-						MessageManagement.chat(this, name + "进入了" + location);
+						location.enter(this);
 					}
 				}
 			}
@@ -72,12 +75,12 @@ public class Player {
 			Connection con = DriverManager.getConnection(MySQLData.url, MySQLData.user, MySQLData.password);
 			String sql = "SELECT description FROM mud.rooms WHERE id=?;";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setString(1, this.location);
+			ps.setString(1, this.location.getRoomId());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				description = rs.getString("description") + "\n";//输出当前房间的描述信息
 			}
-			description += getLocationLook();
+			description += location.getLocationLook();
 			MessageManagement.showToPlayer(this, description);
 			rs.close();
 			ps.close();
@@ -90,46 +93,7 @@ public class Player {
 			e.printStackTrace();
 		}
 	}
-	private String getLocationLook(){
-		String[] directions = {"north", "northeast", "east", "southeast", "south", "southwest", "west", "northwest", "up", "down"};
-		return getLocationLook(directions);
-	}
-	private String getLocationLook(String[] directions){
-		//directions需为{"north", "northeast", "east", "southeast", "south", "southwest", "west", "northwest", "up", "down"}中元素的任意排列，不能多也不能少
-		String result = "";
-		try {
-			Class.forName(MySQLData.driver);
-			Connection con = DriverManager.getConnection(MySQLData.url, MySQLData.user, MySQLData.password);
-			String sql = "";
-			PreparedStatement ps = null;
-			ResultSet rs = null;
-			for (int i = 0; i<directions.length; ++i) {
-				sql = "SELECT " + directions[i] + " FROM mud.rooms WHERE id =?;";
-				ps = con.prepareStatement(sql);
-				ps.setString(1, this.location);
-				rs = ps.executeQuery();
-				if (rs.next()) {
-					if (rs.getString(1) != null)
-						result += StaticFunctions.getDirection(directions[i]) + "方是" + StaticFunctions.getRoomName(rs.getString(1)) + "，";
-					else//这个方向不通
-						result += StaticFunctions.getDirection(directions[i]) + "方不通，";
-				}
-			}
-			ps.close();
-			rs.close();
-			con.close();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		int lastComma = result.lastIndexOf('，');//把最后一个逗号变成句号
-		if (lastComma != -1)
-			result = result.substring(0, result.length()-1) + "。";
-		return result;
-	}
+	
 	public void hp() {
 		MessageManagement.showToPlayer(this, "当前生命值为：" + hp);
 	}
@@ -211,13 +175,15 @@ public class Player {
 	}
 
 	public String getLocation() {
-		return location;
+		return location.getRoomId();
 	}
 	
 	public void setLocation(String location) {
-		this.location = location;
+		this.location.setRoomId(location);
 	}
-	
+	public void setRoom(Room r) {
+		this.location = r;
+	}
     public static Hashtable<Integer, Player> getOnlinePlayers() {
 		return onlinePlayers;
 	}

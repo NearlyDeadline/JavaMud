@@ -12,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Hashtable;
 
 public class Server {
 
@@ -52,6 +53,8 @@ public class Server {
 					}
 					UserInput.dealInput(p, input);
 				}
+				in.close();
+				out.close();
 				socket.close();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -77,13 +80,12 @@ public class Server {
 				ps = con.prepareStatement(sql);
 				ps.setString(1, name);
 				ResultSet rs = ps.executeQuery();
-				player = new Player();
-				while (rs.next()) {
-					int id = rs.getInt(1);
+				if (rs.next()) {
+					int id = rs.getInt("id");
+					player = new Player(rs.getString("location"));
 					player.setId(id);
-					player.setName(rs.getString(2));
-					player.setHp(rs.getInt(3));
-					player.setLocation(rs.getString(4));
+					player.setName(rs.getString("name"));
+					player.setHp(rs.getInt("hp"));
 					Player.addOnlinePlayers(id, player);
 				}
 				rs.close();
@@ -105,10 +107,39 @@ public class Server {
 	static public void main(String[] args) throws IOException {
 		@SuppressWarnings("resource")
 		ServerSocket serverSocket = new ServerSocket(PORT_NUM);
+		CreateRooms();
 		System.out.println("服务器开始运行");
 		while (true) {
 			Socket socket = serverSocket.accept();
 			new ServerThread(socket).start();
 		}
+	}
+	private static void CreateRooms() {
+		try {
+			Class.forName(MySQLData.driver);
+			Connection con = DriverManager.getConnection(MySQLData.url, MySQLData.user, MySQLData.password);
+			String sql = "SELECT (id) FROM mud.rooms;";//MySQL语句
+			PreparedStatement ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();//执行查询操作，返回结果集
+			Room each = new Room();
+			while (rs.next()) {//遍历结果集
+				each.setRoomId(rs.getString("id"));
+				Rooms.put(rs.getString("id"), each);
+				each = new Room();
+			}
+			rs.close();
+			ps.close();
+			con.close();//关闭各个数据库变量
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	private static Hashtable<String, Room> Rooms = new Hashtable<String, Room>();//保存所有Room的enter,leave方法
+	public static Room getRoom(String RoomId) {
+		return Rooms.get(RoomId);
 	}
 }
