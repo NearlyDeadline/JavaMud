@@ -108,11 +108,36 @@ public static void broadcast(String message);
 ## 数据库构造语句
 - 创建数据库
 ```
-
+CREATE DATABASE mud;
+//我的登录账号为root，密码为nfs9mw。如不同，可修改forstudent/MySQLData.java内的常量内容
 ```
 - 创建表单
 ```
-
+CREATE TABLE `mud`.`rooms` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `area` VARCHAR(45) NOT NULL DEFAULT 'init',
+  `description` VARCHAR(150) NULL,
+  `west` VARCHAR(45) NULL,
+  `east` VARCHAR(45) NULL,
+  `south` VARCHAR(45) NULL,
+  `north` VARCHAR(45) NULL,
+  `northeast` VARCHAR(45) NULL,
+  `southeast` VARCHAR(45) NULL,
+  `northwest` VARCHAR(45) NULL,
+  `southwest` VARCHAR(45) NULL,
+  `up` VARCHAR(45) NULL,
+  `down` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+CREATE TABLE `mud`.`new_table` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `hp` INT UNSIGNED NOT NULL DEFAULT '100',
+  `location` VARCHAR(45) NOT NULL DEFAULT 'init',
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC),
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC));
 ```
 - 创建世界
 ```
