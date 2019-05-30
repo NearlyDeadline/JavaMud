@@ -6,27 +6,23 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Room {
-	private String RoomId;
+public interface Room {
+	public String getRoomId();
 	
-	public String getRoomId() {
-		return RoomId;
-	}
-
-	public void setRoomId(String roomId) {
-		RoomId = roomId;
-	}
-	public void enter(Player p) {
-		MessageManagement.chat(p, p.getName() + "进入了" + StaticFunctions.getRoomName(RoomId));
-	}
-	public void leave(Player p) {
-		MessageManagement.chat(p, p.getName() + "离开了" + StaticFunctions.getRoomName(RoomId));
-	}
-	public String getLocationLook(){
+	public void setRoomId(String roomId);
+	
+	public void enter(Player p);
+	
+	public void leave(Player p);
+	
+	String[] directions = {"north", "northeast", "east", "southeast", "south", "southwest", "west", "northwest", "up", "down"};
+	
+	public default String getLocationLook(){
 		String[] directions = {"north", "northeast", "east", "southeast", "south", "southwest", "west", "northwest", "up", "down"};
 		return getLocationLook(directions);
 	}
-	public String getLocationLook(String[] directions){
+	
+	public default String getLocationLook(String[] directions){
 		//directions需为{"north", "northeast", "east", "southeast", "south", "southwest", "west", "northwest", "up", "down"}中元素的任意排列，不能多也不能少
 		String result = "";
 		try {
@@ -62,5 +58,5 @@ public class Room {
 			result = result.substring(0, result.length()-1) + "。";
 		return result;
 	}
+	
 }
- 

@@ -11,7 +11,7 @@ public class UserInput {
 			p.look();
 			return;
 		}
-		if (inputs[0].equals("quit")) {
+		if (inputs[0].equals("q") || inputs[0].equals("quit")) {
 			MessageManagement.showToPlayer(p, "成功下线退出游戏");
 			MessageManagement.removePlayerChannels(p.getId());
 			Player.delOnlinePlayers(p.getId());

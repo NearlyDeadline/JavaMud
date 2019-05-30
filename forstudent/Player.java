@@ -16,7 +16,7 @@ public class Player {
 	private Room location;
 	
 	Player(String Location){
-		location = Server.getRoom(Location);
+		location = World.getRoom(Location);
 		location.setRoomId(Location);
 	}
 	static private Hashtable<Integer, Player> onlinePlayers = new Hashtable<Integer, Player>();//所有在线玩家保存到内存中
@@ -181,7 +181,7 @@ public class Player {
 	public void setLocation(String location) {
 		this.location.setRoomId(location);
 	}
-	public void setRoom(Room r) {
+	public void setRoom(CommonRoom r) {
 		this.location = r;
 	}
     public static Hashtable<Integer, Player> getOnlinePlayers() {

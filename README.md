@@ -7,6 +7,8 @@
    - 实现群聊chat功能，实现私聊tell功能，能够查看在线玩家（who)
    - 将创建的游戏世界信息在数据库中存储，设计合理的结构
    - 实现玩家状态信息，可以查看（hp），并能够存储玩家状态（退出后记录当前状态，下次登录后以当前状态连线
+- 其他内容：
+   - 将群聊chat功能的范围限定于一些房间内，抽象出新的Area区域：只有在同一区域内的群聊才可被互相看到
 ---
 ## 程序架构
 - Server.java: 服务器程序
@@ -18,12 +20,6 @@ public void run();
 
 public static Player login(BufferedWriter out, String name);
 - 从客户端读入登录账户名name，在数据库中创建该用户，通过缓冲流out输出提示信息，回传该用户指针
-
-private static Hashtable<String, Room> Rooms = new Hashtable<String, Room>();
-- 保存所有房间的哈希表，主要用于实现Room的多态
-
-private static void CreateRooms();
-- 创建世界的各种房间，主要用于实现Room的多态
 ```
 - Client.java: 客户端程序
 ```
@@ -39,12 +35,20 @@ class JTextArea;
 private void appendText(String text);
 - 将文本text显示于屏幕上，焦点设置于JTextArea，使其滚到最底部，使用户方便查看最新消息，再将焦点设置于JTextField，使用户方便输入下一条指令
 ```
-- UserInput.java: 响应操作指令方法
+- UserInput.java: 响应操作指令
 ```
 public static void dealInput(Player p, String inputMessage);
 - 对于账户p输入的指令inputMessage，根据if-else语句调用Player的相关方法
 ```
-- Player.java: 登录账户类
+- World.java: 创建所有房间
+```
+private static Hashtable<String, Room> Rooms;
+- 保存所有Room的enter,leave方法
+
+public static void CreateWorld();
+- 创建各个Room
+```
+- Player.java: 登录账户
 ```
 static private Hashtable<Integer, Player> onlinePlayers = new Hashtable<Integer, Player>();
 - 将全部已登录账户移入内存中
@@ -73,18 +77,30 @@ public void tell(String name, String message);
 public void who();
 - 查询其他在线玩家，显示其姓名
 ```
-- Room.java: 房间类，本类主要实现Room的多态，数据只留存一个id，其余在数据库中保存
+- Room.java: 房间接口，给出所有房间应有的一些操作
 ```
+public String getRoomId();
+public void setRoomId(String roomId);
+- 内存中只保留RoomId，其余信息移入数据库保存	
+
 public void enter(Player p);
 - 玩家p进入房间时调用该方法
-
+	
 public void leave(Player p);
 - 玩家p离开房间时调用该方法
 
-private String getLocationLook(String[] directions);
-- 根据directions环视房间，获取各个出口房间的名称，默认的directions为{"north", "northeast", "east", "southeast", "south", "southwest", "west", "northwest", "up", "down"};
+String[] directions = {"north", "northeast", "east", "southeast", "south", "southwest", "west", "northwest", "up", "down"};
+- 常量，用来设置得到房间信息方法中的方向顺序	
+
+public default String getLocationLook();	
+public default String getLocationLook(String[] directions)
+- 得到房间信息的方法给出了默认实现	
 ```
-- MessageManagement.java: 发送消息方法
+- CommonRoom.java: 通常房间类，特点是进入、离开时向同area内所有玩家发送消息
+```
+- 调用MessageManagement.chat方法发送消息
+```
+- MessageManagement.java: 发送消息
 ```
 private static Hashtable<Integer,BufferedWriter> playerChannels = new Hashtable<Integer,BufferedWriter>();
 - 保存玩家频道
@@ -104,42 +120,6 @@ public static void broadcast(String message);
 - CommonContent.java: 保存枚举变量——方向
 - MySQLData.java: 保存连接数据库的个人信息
 - StaticFunctions.java: 保存获取方向的方法
-
-## 数据库构造语句
-- 创建数据库
-```
-CREATE DATABASE mud;
-//我的登录账号为root，密码为nfs9mw。如不同，可修改forstudent/MySQLData.java内的常量内容
-```
-- 创建表单
-```
-CREATE TABLE `mud`.`rooms` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NOT NULL,
-  `area` VARCHAR(45) NOT NULL DEFAULT 'init',
-  `description` VARCHAR(150) NULL,
-  `west` VARCHAR(45) NULL,
-  `east` VARCHAR(45) NULL,
-  `south` VARCHAR(45) NULL,
-  `north` VARCHAR(45) NULL,
-  `northeast` VARCHAR(45) NULL,
-  `southeast` VARCHAR(45) NULL,
-  `northwest` VARCHAR(45) NULL,
-  `southwest` VARCHAR(45) NULL,
-  `up` VARCHAR(45) NULL,
-  `down` VARCHAR(45) NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC));
-CREATE TABLE `mud`.`new_table` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NOT NULL,
-  `hp` INT UNSIGNED NOT NULL DEFAULT '100',
-  `location` VARCHAR(45) NOT NULL DEFAULT 'init',
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC),
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC));
-```
-- 创建世界
-```
-
-```
+---
+## 数据库构造
+- 直接导入数据库文件——见附件
