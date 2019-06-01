@@ -60,7 +60,7 @@ public class Server {
 			}
 		}
 		
-		public static Player login(BufferedWriter out, String name) {
+		private static Player login(BufferedWriter out, String name) {
 			Player player = null;
 			try {
 				Class.forName(MySQLData.driver);
