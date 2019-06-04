@@ -17,7 +17,7 @@
 - Server.java: 服务器程序
 ```
 public void run();
-- 接管客户端线程，输出登录提示信息，获取登录账户名，调用login创建用户，并将其加入onlinePlayers中，为其创建输出频道BufferedWriter
+- 接管客户端线程，输出登录提示信息，获取登录账户名，调用login()方法创建用户，并将其加入onlinePlayers中，为其创建输出频道BufferedWriter
 - 不断调用dealInput响应客户端上传的操作指令，直至客户端退出
 - 退出登录后进行收尾处理，从onlinePlayers中移除该账户，移除对应的BufferedWriter等
 
@@ -25,7 +25,7 @@ private static Player login(BufferedWriter out, String name);
 - 由run调用的方法，从客户端读入登录账户名name，在数据库中创建该用户，通过缓冲流out向客户端输出提示信息，回传该用户指针
 
 static public void main(String[] args);
-- 主函数，启动服务器，调用World.CreateWorld方法构建世界，等待客户端连接
+- 主函数，启动服务器，调用World.CreateWorld()方法构建世界，等待客户端连接
 ```
 - Client.java: 客户端程序
 ```
@@ -52,7 +52,7 @@ public static void dealInput(Player p, String inputMessage);
 - World.java: 创建所有房间
 ```
 private static Hashtable<String, Room> Rooms;
-- 保存所有Room的enter,leave方法
+- 保存所有Room的enter(),leave()方法
 
 public static void CreateWorld();
 - 创建各个Room
@@ -130,4 +130,8 @@ public static void broadcast(String message);
 - StaticFunctions.java: 保存获取中文方向的方法，和通过RoomId查询房间Name的方法
 ---
 ## 数据库构造
-- 直接导入数据库文件——见附件
+- 为充分利用到各个方向，构造的虚拟世界来自于长春市解放大路地铁站，该站具有多层立体化结构，适宜作为虚拟世界
+- 请直接导入数据库文件——见附件
+---
+## 运行效果
+- 客户端登录界面
