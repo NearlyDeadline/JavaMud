@@ -1,4 +1,4 @@
-package forstudent;
+package src.forstudent;
 
 public class UserInput {
 	public static void dealInput(Player p, String inputMessage) {

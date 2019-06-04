@@ -1,4 +1,4 @@
-package forstudent;
+package src.forstudent;
 
 import java.io.BufferedWriter;
 import java.sql.Connection;

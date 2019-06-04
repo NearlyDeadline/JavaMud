@@ -132,7 +132,7 @@ public static void broadcast(String message);
 ## 数据库构造
 - 为充分利用到各个方向，构造的虚拟世界来自于长春市解放大路地铁站，该站具有多层立体化结构，适宜作为虚拟世界
 - 请直接导入数据库文件——见/src/database/*.csv
-   - 考虑到MySQL导入文件时有可能将"NULL"作为单独的字符串值使用，如有必要，请在导入后自行将'NULL'字符串替换为NULL值，即：UPDATE mud.rooms SET 'col' = NULL WHERE 'col' = 'NULL';其中'col'依次遍历每个方向
+   - 考虑到MySQL导入文件时有可能将"NULL"作为单独的字符串使用，请
 ---
 ## 运行效果
 - 客户端登录测试

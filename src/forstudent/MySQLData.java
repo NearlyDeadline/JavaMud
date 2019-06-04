@@ -1,4 +1,4 @@
-package forstudent;
+package src.forstudent;
 
 public final class MySQLData {
 	static public final String driver = "com.mysql.cj.jdbc.Driver";

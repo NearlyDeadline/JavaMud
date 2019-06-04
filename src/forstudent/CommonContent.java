@@ -1,4 +1,4 @@
-package forstudent;
+package src.forstudent;
 
 public interface CommonContent {
 	String CANNOTMOVE = "这个方向没有出路";

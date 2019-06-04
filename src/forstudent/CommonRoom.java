@@ -1,4 +1,4 @@
-package forstudent;
+package src.forstudent;
 
 public class CommonRoom implements Room{
 	private String RoomId;

@@ -1,4 +1,4 @@
-package forstudent;
+package src.forstudent;
 
 import java.awt.BorderLayout;
 import java.awt.Container;

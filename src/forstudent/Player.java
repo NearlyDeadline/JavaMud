@@ -1,4 +1,4 @@
-package forstudent;
+package src.forstudent;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
